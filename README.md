@@ -112,3 +112,5 @@ classDiagram
     Ufo <|-- SpecialUfo1
     Ufo <|-- SpecialUfo2
 ```
+
+lowkey forgot about powerups, will do this later
