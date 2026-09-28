@@ -1,1 +1,7 @@
-// not gonna write anything, just needed a file to commit this folder
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SpaceRocksTest {
+
+}
