@@ -2,6 +2,28 @@ plugins {
     id 'application'
 }
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+sourceSets {
+    test {
+        java {
+            srcDirs = ['src/main/test']
+        }
+    }
+}
+
 application {
     mainClass = 'spacerocks.SpaceRocks'
+}
+
+test {
+    useJUnitPlatform()
 }
