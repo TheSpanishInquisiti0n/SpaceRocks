@@ -1,3 +1,5 @@
+package spacerocks;
+
 class GameWindow{
 
     public GameWindow() {

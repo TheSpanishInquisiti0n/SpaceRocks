@@ -82,6 +82,12 @@ classDiagram
     class SpecialUfo2
     class EnemyFactory
 
+    %% ===== Power-ups =====
+    class PowerUp
+    class SpecialPowerUp1
+    class SpecialPowerUp2
+    class PowerUpFactory
+
     %% ===== Core relationships =====
     SpaceRocks *-- GameWindow : creates
     GameWindow *-- GamePanel : contains
@@ -99,7 +105,12 @@ classDiagram
     PlayState "1" *-- "*" Enemy
     PlayState "1" *-- "*" Bullet
     PlayState --> EnemyFactory : spawns enemies with
+    PlayState --> PowerUpFactory : spawns power-ups with
     EnemyFactory ..> Enemy : creates
+
+    %% ===== Power-up relationships =====
+    PowerUpFactory ..> PowerUp : creates
+    Player ..> PowerUp : uses
 
     %% ===== Inheritance =====
     Entity <|-- Player
@@ -111,6 +122,20 @@ classDiagram
     Asteroid <|-- SpecialAsteroid2
     Ufo <|-- SpecialUfo1
     Ufo <|-- SpecialUfo2
+    PowerUp <|-- SpecialPowerUp1
+    PowerUp <|-- SpecialPowerUp2
 ```
+## Legend for Class Structure Diagram
 
-lowkey forgot about powerups, will do this later
+| Symbol | Name | Meaning in this diagram |
+|---|---|---|
+| `<<interface>>` | Interface | Defines methods that implementing classes must provide (e.g. `GameState`). |
+| `<<abstract>>` | Abstract class | Can't be created directly; only its subclasses can (e.g. `Entity`, `Enemy`). |
+| `<\|--` | Inheritance | The class on the right extends the class on the left (e.g. `Enemy <\|-- Asteroid`). |
+| `<\|..` | Realization | The class on the right implements the interface on the left (e.g. `GameState <\|.. PlayState`). |
+| `*--` | Composition | The owner creates and controls the other class; it lives and dies with the owner (e.g. `PlayState *-- Player`). |
+| `-->` | Association | The class holds a reference to the other class (e.g. `SpaceRocks --> GameState`). |
+| `..>` | Dependency | The class uses the other briefly, such as creating it or passing it around (e.g. `EnemyFactory ..> Enemy`). |
+| `"1"` | Multiplicity: one | Exactly one instance on that side of the relationship. |
+| `"*"` | Multiplicity: many | Zero or more instances on that side of the relationship. |
+| `: label` | Relationship label | Plain-text description of the relationship; doesn't change its meaning. |
