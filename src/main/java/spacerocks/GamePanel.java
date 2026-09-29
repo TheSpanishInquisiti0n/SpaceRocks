@@ -1,9 +1,13 @@
 package spacerocks;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 //the screen and keyboard for the game, SpaceRocks owns the state and the loop
 public class GamePanel extends JPanel implements KeyListener{
@@ -16,8 +20,8 @@ public class GamePanel extends JPanel implements KeyListener{
         this.game = game;
         setPreferredSize(new Dimension(WIDTH,HEIGHT));
         setBackground(Color.BLACK);
-        setDoubleBuffered(true); //should hopefully reduce any flicker?
-        setFocusable(true); //needed for keys to register
+        setDoubleBuffered(true); //double buffering reduces flicker if there will be any
+        setFocusable(true); //allows you to tab into the window
         addKeyListener(this);
     }
 

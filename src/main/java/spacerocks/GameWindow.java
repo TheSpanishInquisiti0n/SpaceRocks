@@ -16,7 +16,7 @@ class GameWindow{
         frame.pack(); //sizes the window to fit the panel's preferred size
 
         frame.setLocationRelativeTo(null); //center of screen
-        frame.setVisible(true); //pop up on your screen
+        frame.setVisible(true); //pops up on your screen
         panel.requestFocusInWindow(); //so key presses go to the panel
     }
 
