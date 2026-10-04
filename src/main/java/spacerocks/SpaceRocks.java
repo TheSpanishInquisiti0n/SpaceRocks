@@ -15,11 +15,12 @@ public class SpaceRocks {
     private GameState currentState;
 
     public SpaceRocks(){
-        window = new GameWindow(this); //SpaceRocks creates the window
         currentState = new TitleState(this);
+        window = new GameWindow(this); //SpaceRocks creates the window
 
         //main game loop, ~60 times a second (1000/60 = 16ms per frame)
         loop = new Timer(1000 / FPS, e -> {
+            currentState.update();
             window.getPanel().repaint();
 
         });
@@ -36,7 +37,11 @@ public class SpaceRocks {
     }
 
     //called by GamePanel, will pass keys to the current state once states exist
-    public void keyPressed(int keyCode){}
+    public void keyPressed(int keyCode){
+        currentState.keyPressed(keyCode);
+    }
 
-    public void keyReleased(int keyCode){}
+    public void keyReleased(int keyCode){
+        currentState.keyPressed(keyCode);
+    }
 }

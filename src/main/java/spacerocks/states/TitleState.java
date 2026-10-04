@@ -17,13 +17,12 @@ public class TitleState implements GameState {
 
     @Override 
     public void update(){
-        //title screen wont have any moving objects
+        //title screen wont have any moving objects yet
     }
     
     @Override 
     public void draw(Graphics2D g){
-        g.setColor(Color.BLACK);
-        //total gamble if hyper space works, I hope it does
+        //hyperspace is now a legal font, see Fonts.java
         g.setColor(Color.WHITE);
         g.setFont(Fonts.HYPERSPACE_BOLD.deriveFont(48f));
         g.drawString("SPACE ROCKS", GamePanel.WIDTH/2-160, GamePanel.HEIGHT/2-40);
