@@ -14,9 +14,12 @@ public class Sprite{
     //I caved, having a sprite class is a good idea
     private static final Map<String, BufferedImage> cache = new HashMap<>();
     private final BufferedImage image;
+    private final int width, height;
 
-    public Sprite(String path){
+    public Sprite(String path, int width, int height){
         image = cache.computeIfAbsent(path, Sprite::load);
+        this.width = width;
+        this.height = height;
     }
 
     private static BufferedImage load(String path){
@@ -34,7 +37,7 @@ public class Sprite{
         AffineTransform old = g.getTransform();
         g.translate(x, y);
         g.rotate(theta);
-        g.drawImage(image, -image.getWidth()/2, -image.getHeight()/2,null);
+        g.drawImage(image, -width/2, -height/2,width,height,null);
         g.setTransform(old);
     }
 

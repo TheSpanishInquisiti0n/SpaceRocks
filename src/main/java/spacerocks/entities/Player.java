@@ -4,9 +4,9 @@ import java.awt.Graphics2D;
 
 public class Player extends Entity {
     //added per tick
-    private static double TURN_SPEED = 0.1;
-    private static double THRUST = 0.15;
-    private static double FRICTION = 0.5; //so things take a second to slow down
+    private static double TURN_SPEED = 0.08;
+    private static double THRUST = 0.5;
+    private static double FRICTION = 0.99; //so things take a second to slow down
     public Player(){
         super();
     }

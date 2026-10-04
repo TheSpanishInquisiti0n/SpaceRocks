@@ -20,7 +20,7 @@ public abstract class Entity {
         dy = 0.0;
         dtheta = 0.0;
         hitBox = new HitBox(this, 1);
-        sprite = new Sprite("src\\main\\resources\\sprites\\Player.png");
+        sprite = new Sprite("/sprites/Player.png",30,30);
     }
 
     protected Entity(double x, double y, double theta, double dx, double dy, double dtheta, double radius, String path){
@@ -31,7 +31,7 @@ public abstract class Entity {
         this.dy = dy;
         this.dtheta = dtheta;
         this.hitBox = new HitBox(this,radius);
-        sprite = new Sprite(path);
+        sprite = new Sprite(path,30,30);
     }
     //needs update method just x+dx, y+dy
     public void update(){
