@@ -1,5 +1,11 @@
 package spacerocks.entities;
 
-public class Ufo extends Enemy {
+import java.awt.Graphics2D;
 
+public class Ufo extends Enemy {
+    public Ufo(){
+
+    }
+    @Override 
+    public void draw(Graphics2D g){}
 }

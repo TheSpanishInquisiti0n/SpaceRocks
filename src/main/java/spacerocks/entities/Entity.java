@@ -9,7 +9,7 @@ public abstract class Entity {
     protected double dx, dy, dtheta;
     protected boolean alive = true;
     protected final HitBox hitBox;
-    //private final Sprite sprite;
+    protected final Sprite sprite;
     //protected Constructor
     protected Entity(){
         x=GamePanel.WIDTH/2.0;
@@ -20,9 +20,10 @@ public abstract class Entity {
         dy = 0.0;
         dtheta = 0.0;
         hitBox = new HitBox(this, 1);
+        sprite = new Sprite("src\\main\\resources\\sprites\\Player.png");
     }
 
-    protected Entity(double x, double y, double theta, double dx, double dy, double dtheta, double radius){
+    protected Entity(double x, double y, double theta, double dx, double dy, double dtheta, double radius, String path){
         this.x = x;
         this.y = y;
         this.theta = theta;
@@ -30,6 +31,7 @@ public abstract class Entity {
         this.dy = dy;
         this.dtheta = dtheta;
         this.hitBox = new HitBox(this,radius);
+        sprite = new Sprite(path);
     }
     //needs update method just x+dx, y+dy
     public void update(){

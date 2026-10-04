@@ -1,6 +1,7 @@
 package spacerocks.states;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 import spacerocks.SpaceRocks;
 import spacerocks.entities.Player;
@@ -9,6 +10,8 @@ import spacerocks.entities.Player;
 public class PlayState implements GameState {
     private final SpaceRocks game;
     private final Player player;
+    //for keys
+    private boolean  up, left, right;
 
     public PlayState(SpaceRocks game){
         this.game = game;
@@ -17,21 +20,38 @@ public class PlayState implements GameState {
 
     @Override 
     public void update(){
-
+        if(left){
+            player.rotateLeft();
+        }
+        if(right){
+            player.rotateRight();
+        }
+        if(up){
+            player.thrust();
+        }
+        player.update();
     }
     
     @Override 
     public void draw(Graphics2D g){
-
+        player.draw(g);
     }
 
     @Override
     public void keyPressed(int keyCode){
-
+        switch(keyCode){
+            case KeyEvent.VK_W -> up = true;
+            case KeyEvent.VK_A -> left = true;
+            case KeyEvent.VK_D -> right = true;
+        }
     }
 
     @Override
     public void keyReleased(int keyCode){
-
+        switch(keyCode){
+            case KeyEvent.VK_W -> up = false;
+            case KeyEvent.VK_A -> left = false;
+            case KeyEvent.VK_D -> right = false;
+        }
     }
 }
