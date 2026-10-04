@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 
 import javax.swing.Timer;
 
+import spacerocks.states.TitleState;
+
 public class SpaceRocks {
     public static final int FPS = 60;
 
@@ -12,6 +14,7 @@ public class SpaceRocks {
 
     public SpaceRocks(){
         window = new GameWindow(this); //SpaceRocks creates the window
+        currentState = new TitleState(this);
 
         //main game loop, ~60 times a second (1000/60 = 16ms per frame)
         loop = new Timer(1000 / FPS, e -> {

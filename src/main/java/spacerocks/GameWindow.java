@@ -1,5 +1,6 @@
 package spacerocks;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 class GameWindow{
@@ -8,6 +9,10 @@ class GameWindow{
 
     public GameWindow(SpaceRocks game) {
         frame = new JFrame("Space Rocks"); // Title Bar
+        
+        ImageIcon frameLogo = new ImageIcon("sprites\\Asteroids.png");
+        frame.setIconImage(frameLogo.getImage()); //for the little image in the window title
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closing the window terminates program
         frame.setResizable(false); //panel is a fixed size, so the window is too
 
