@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.Timer;
 
+import spacerocks.states.GameState;
 import spacerocks.states.TitleState;
 
 public class SpaceRocks {
@@ -11,6 +12,7 @@ public class SpaceRocks {
 
     private final GameWindow window;
     private final Timer loop;
+    private GameState currentState;
 
     public SpaceRocks(){
         window = new GameWindow(this); //SpaceRocks creates the window
@@ -18,14 +20,20 @@ public class SpaceRocks {
 
         //main game loop, ~60 times a second (1000/60 = 16ms per frame)
         loop = new Timer(1000 / FPS, e -> {
-            //update the current state here once states exist
-            window.getPanel().repaint(); //redraws the panel (black background + draw())
+            window.getPanel().repaint();
+
         });
         loop.start();
     }
 
+    public void setState(GameState nexState){
+        currentState = nexState;
+    }
+
     //called by GamePanel, will draw the current state once states exist
-    public void draw(Graphics2D g){}
+    public void draw(Graphics2D g){
+        currentState.draw(g);
+    }
 
     //called by GamePanel, will pass keys to the current state once states exist
     public void keyPressed(int keyCode){}
