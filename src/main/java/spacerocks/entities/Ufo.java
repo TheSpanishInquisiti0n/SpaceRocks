@@ -8,4 +8,9 @@ public class Ufo extends Enemy {
     }
     @Override 
     public void draw(Graphics2D g){}
+
+    @Override
+    public boolean willWrap(){
+        return true;
+    }
 }

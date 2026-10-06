@@ -9,4 +9,8 @@ public class Bullet extends Entity {
     @Override 
     public void draw(Graphics2D g){}
 
+    public boolean willWrap(){
+        return false;
+    }
+
 }

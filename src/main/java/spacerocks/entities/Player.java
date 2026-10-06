@@ -33,4 +33,9 @@ public class Player extends Entity {
     public void draw(Graphics2D g){
         sprite.draw(g, x, y, theta);
     }
+
+    @Override 
+    public boolean willWrap(){
+        return true;
+    }
 }

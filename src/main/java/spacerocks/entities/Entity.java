@@ -38,6 +38,7 @@ public abstract class Entity {
         x += dx;
         y+=dy;
         theta += dtheta;
+        //wrap is gonna be problematic for bullet
         wrap();
     }
 
@@ -68,7 +69,9 @@ public abstract class Entity {
     }
 
     public void wrap(){
-        if(x<0){
+        //fix for wrap affecting bullet
+        if(this.willWrap()){
+            if(x<0){
             x+=GamePanel.WIDTH;
         }
         else if(x>GamePanel.WIDTH){
@@ -80,12 +83,13 @@ public abstract class Entity {
         else if(y>GamePanel.HEIGHT){
             y-=GamePanel.HEIGHT;
         }
-
+        }
     }
 
     public boolean collidesWith(Entity other){
         return hitBox.intersects(other.hitBox);
     }
 
+    public abstract boolean willWrap();
 }
 

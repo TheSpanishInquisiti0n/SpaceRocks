@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 public abstract class Enemy extends Entity {
     protected Enemy(){
-        
+        super();
     }
     @Override
     public void draw(Graphics2D g){} 
