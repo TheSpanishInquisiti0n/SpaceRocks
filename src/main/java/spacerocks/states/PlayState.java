@@ -8,12 +8,14 @@ import java.util.List;
 import spacerocks.SpaceRocks;
 import spacerocks.entities.Asteroid;
 import spacerocks.entities.Player;
+import spacerocks.entities.Ufo;
 
 //this is the class we might put a builder on if we hate ourselves
 public class PlayState implements GameState {
     private final SpaceRocks game;
     private final Player player;
     private final List<Asteroid> asteroids;
+    private final List<Ufo> ufos;
     //for keys
     private boolean  up, left, right;
 
@@ -21,7 +23,9 @@ public class PlayState implements GameState {
         this.game = game;
         player = new Player();
         asteroids = new ArrayList<>();
+        ufos = new ArrayList<>();
         asteroids.add(new Asteroid());
+        ufos.add(new Ufo());
     }
 
     @Override 
@@ -38,6 +42,9 @@ public class PlayState implements GameState {
         for(Asteroid asteroid:asteroids){
             asteroid.update();
         }
+        for(Ufo ufo:ufos){
+            ufo.update();
+        }
         player.update();
     }
     
@@ -46,6 +53,9 @@ public class PlayState implements GameState {
         player.draw(g);
         for(Asteroid asteroid:asteroids){
             asteroid.draw(g);
+        }
+        for(Ufo ufo:ufos){
+            ufo.draw(g);
         }
     }
 
