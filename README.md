@@ -193,7 +193,7 @@ This is the class I'm going to be using to just play the game out of a window in
 
 - keyPressed and keyReleased: these are for gamePanel, because game calls keyPressed and keyReleased they need to be defined here.
 
-## Import Notes
+### Import Notes
 
 - Swing: this is the guy that gives you JFrame and Jpanel. these are responsible for the window you see pop up on your computer
 
@@ -203,6 +203,169 @@ This is the class I'm going to be using to just play the game out of a window in
 
 - awt.Graphics, awt.Graphics2D, awt.Dimension: these are all in some way about handling the window, a dimension is essentially a tuple if youre familiar with python, and the graphics packages get used in paintComponent/draw
 
-## One last thing then I'm done, promise
+#### One last thing then I'm done, promise
 
 - I know we were talking about OpenGL for this, as you may have noticed, this does not use JOGL, this uses stuff out of the awt and swing libraries. can we change this? yes. should we make that decision soon? also yes. this is just like the "most basic" java window when I first opened up the google and asked it how I might go about doing this. it seems entirely possible to do the whole game using these imports but I dont have the knowledge about these libraries yet to fully realize what these are and aren't capable of
+
+## Dev Log (10/6): A Ship that Flies Around Your Screen
+
+Lord, okay. I've spent the better part of 16 hours coding past what we were at last time and I made some fun things, but I simply cannot stand writing documentation. It is currently 2:06am and I am god's highest soldier right now so let's knock this out before I realize I am writing this
+
+### New to the Family: States
+
+You know how in my last dev log I was talking a little bit about game states? well here they are, lets start with GameState
+
+#### GameState
+
+GameState exists as an interface. really, it exists to give all other state classes 4 methods that they must override: update, draw, keypressed, and keyreleased.
+
+- Update will do all of the calculations for all of the objects that will eventually move, like the player
+
+- Draw is what will physically be drawn to our very good friend Jframe
+
+- keyPressed will turn into the switch case for what keys are being pressed, where we then change the value of booleans that appear in update
+
+- keyReleased will basically just act as the event to change aforementioned booleans back to false.
+
+Lets look at TitleState now
+
+- Constructor: just takes the parent game in so it knows what it's attatched to
+
+- Update: no objects to be rendered in here yet, unless we want to get fancy and make a title animation or something, this is empty for the time being
+
+- Draw: you may notice the parameter is a Graphics2D object, this is our paintbrush (its really a very complicated object that I'm a little scared of but shut up) and brother, we are vincent van gogh. using our boy, g, we draw 2 pieces of text onto the title screen. we do this by using a font called Hyperspace, how do you implement that? im glad you ask
+
+### The Fonts Class
+
+Who says you need to finish the last section to start a new one? nobody? sick
+
+you may notice we import font here, Fonts is essentially a helper class that just allows us to load in our own fonts as static variables
+
+This is where Hyperspace ended up, the actual font file is in /resources/fonts but we load it in here
+
+The load method just calls the static Font method createFont which does most of the heavy lifting, and we take the file in as an InputStream. TRUETYPE_FONT allows us to take in a font file with outlines, which Hyperspace does. otherwise if we catch any errors, we just load the default Monospaced font in instead. its safe, and it works
+
+### Back to Business
+
+keyReleased: empty, subject to change if we want a more cohesive title screen/menu
+
+keyPressed: only looks for the enter key, and when its found it sets the gamestate to PlayState
+
+#### PlayState: the bread and butter
+
+You may notice this also takes in the game, this will be a constant trend, the state is bound to the game. more importantly, all of our little critters, including the player, the enemies, and the powerups will exist in here, not the game.
+
+The booleans here are up, left, right, there will eventually be one for the shooting but I haven't got to that yet. I figured the dev log would be more important. our KeyEvent methods will set these booleans to true when their respective key events happen. Notice these methods are constantly being run all the way from the addKeyListener(this) in GamePanel's constructor, so you never have to call these anywhere
+
+Right now we also just have a player in here, this is what you control in-game, it would probably be smart to put a couple factory classes in here for making enemies and powerups and whatnot, but thats later. What is a player? oh fuck is he gonna do the thing where he interrupts the section aga-
+
+### Player Class
+
+wait? doesn't player inherit from Entity?
+
+### Entity Class: the ACTUAL Bread and butter
+
+man, where do I even begin? I did this one in an all nighter on my own volition and this is where the spaghetti code really comes into play. It's just a class in development before we really know the full scope of all the entity decisions, and then i fear it still might be a work in progress until like 80% into this whole shebang. whatever
+
+Lets sit down and make some general assumptions about what an entity needs in a game:
+
+- Probably needs to keep track of its position for gamepanel
+
+- probably needs to know how its speed on the screen for when the game updates
+
+- probably needs to know if its alive
+
+- probably needs a hitbox, and probably needs a sprite to show on the screen
+
+### Hitbox? Sprite?
+
+These fellas came into existence when I was driving on the 36 back from work, thinking about geometry dash hitboxes (I'm sick in the head like that), and decided we should probably do this too.
+
+#### HitBox
+
+For the time being, all hitboxes are circles. I figured it would be the most accomodating shape for all the enemies. this can most definitely change if we would like it to. 
+
+- HitBox holds onto Entity like GameState holds onto SpaceRocks. any HitBox object will also need a radius because it's a circle
+
+- getRadius is really just a helper method for intersects
+
+- intersects: takes in another hitbox, subtracts their x and y position, and then compares that distance to the sum of the two radii. this is a euclidean inequality so everything is squared. if the distance is greater than the radii, then it returns false, otherwise they are touching and so they do intersect
+
+#### Sprite
+
+Sprite suffers from the fact that we're taking in an image, the responsibility falls on him to do the heavy lifting. we believe in you Sprite
+
+- We first make a cache for O(1) access to pixels in the image we are taking in for a sprite, we take the image in as a BufferedImage object, and we grab the dimensions of how big we want our sprite to be.
+
+- we must load this BufferedImage, again, we load it in as an InputStream object, and then read it in using ImageIO to read the pixels. this is the full size image in /resources/sprites. everything else here is just error handling
+
+- draw: have you ever heard of an Affine transform? no? thats okay, i forgive you. an affine transform is essentially a whole bunch of linear algebra that preserves the straightness and parallelness of lines in an image when you do something like rotate around (which is what our player is going to be doing). java conveniently has a class to handle this and it is compatible with Graphics2D, what a score. so we grab the transform object from our g object (the paintbrush), translate and rotate it, draw it, and then we set the transform on the old state to update it. all this does is really draw an image of our size prefernce to a certain angle while preserving what the image looks like
+
+### Where were we? Oh, Entity
+
+okay so from those generalizations we made above, we have
+
+- x,y position, theta as heading
+
+- velocity for x, y, theta dx, dy, dtheta
+
+- alive boolean
+
+- hitbox and sprite
+
+You may notice theres a couple of constructors here. we should be doing this here, and probably to a larger extent than I've already done. I really have just built out this class to make the player be able to show up on the screen for right now. 
+
+- First constructor: no arguments, centers the entity on the center of the screen, sets its velocities to 0 and the angle heading to 0. its hitbox has a radius of 1 for right now, i can tell you right now thats probably going to be too small, but it works for now. this also just loads in the player sprite with a width of 30x30 here. what's neat about this one is you can just call this with no arguments and it will just pop out the player object, which made calling super() in Player easier.
+
+- Second constructor: specifies position, heading, x, y, and theta velocities, the radius for the hitbox, and the path to the sprite image. this will maybe the class we do a builder pattern on. i dont really know the specs of the project but if its required.
+
+- update: velocities get added to position and heading, calls a function called wrap(), if youre looking at version history, you will notice the "wrap is gonna be problematic for bullet" comment and i actually fixed this so dont even worry about it
+
+- wrap(): calls the willwrap method on the entity object. this is an abstract method defined by inherited classes. player does wrap, bullets might not, maybe powerups wont either. still open to speculation. otherwise this method just acts as a "go in one side, come out the other" position adjustment on the screen.
+
+- collidesWith(Entity other): returns whether or not hitboxes of two entities are colliding, this will be required for entity death later on.
+
+- Otherwise, entity just has a whole bunch of get functions for position and whatnot
+
+- Oh, and kill, that sets alive to false, this will eventually be used to stop drawing the objects when they die, alse for gamestate stuff
+
+### Where does that bring us back to? Player?
+
+- First we define some variables that will need tweaking at some point, turn speed is in radians/frame^2, thrust is in pixels/frame^2, and friction is an exponential decline function. this means TURN_SPEED, THRUST, and FRICTION are all acceleration values in some way. an important note here is that currently there is no cap on speed in any way, and we may want to fix that 
+
+- writing the Entity constructors in a cool enough way allows us to just super the constructors for the most part
+
+- we also have to define all of the movement methods that we will use in PlayState's update method. remember the booleans? anyways those ones are
+
+- rotateLeft: subtracts turn speed from theta
+
+- rotateRight: adds turn speed to theta
+
+- thrust: adds speed to dx and dy in proportion to direction using sin and cosine
+
+- update: friction is multiplied to the speed of the object to eventually slow it down. it then calls super.update() which adds the speed to the position.
+
+- draw: draws only the sprite
+
+- willWrap: true for the player because we wanna fly around freely in the game window
+
+### Back to PlayState for the final time
+
+Look at us, we've made it so far. we're almost done, prommy.
+
+- the update here calls the player object's movement function based on the booleans that are set true during keyevents, and then calls player's update
+
+- the draw just defaults back to the players draw which puts the sprite on the screen
+
+- the rest are keyevents, w for thurst, a for left, d for right. classic wasd for the win. I'm thinking spacebar for shoot but thats a problem for another day. 
+
+It is important to note that there is no implementation for a pause state, or a game over state yet. a pause state will hold an instance of the playstate so you can resume when you unpause, and we're gonna have to define player death and everything before we even get to a game over. theres definitely still much work to be done on this. we persist nonetheless.
+
+Now running RunTest.java in your ide should pop out a window that you can pilot a little ship around. isnt that exciting? quite a bit more work than anticipated to reach such an early milestone, but such is life.
+
+okay and that should bring us up to speed. until next time.
+
+
+
+
+
