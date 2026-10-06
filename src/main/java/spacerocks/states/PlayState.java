@@ -2,20 +2,26 @@ package spacerocks.states;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import spacerocks.SpaceRocks;
+import spacerocks.entities.Asteroid;
 import spacerocks.entities.Player;
 
 //this is the class we might put a builder on if we hate ourselves
 public class PlayState implements GameState {
     private final SpaceRocks game;
     private final Player player;
+    private final List<Asteroid> asteroids;
     //for keys
     private boolean  up, left, right;
 
     public PlayState(SpaceRocks game){
         this.game = game;
-        this.player = new Player();
+        player = new Player();
+        asteroids = new ArrayList<>();
+        asteroids.add(new Asteroid());
     }
 
     @Override 
@@ -29,12 +35,18 @@ public class PlayState implements GameState {
         if(up){
             player.thrust();
         }
+        for(Asteroid asteroid:asteroids){
+            asteroid.update();
+        }
         player.update();
     }
     
     @Override 
     public void draw(Graphics2D g){
         player.draw(g);
+        for(Asteroid asteroid:asteroids){
+            asteroid.draw(g);
+        }
     }
 
     @Override

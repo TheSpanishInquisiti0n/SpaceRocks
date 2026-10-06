@@ -12,6 +12,10 @@ public abstract class Entity {
     protected final Sprite sprite;
     //protected Constructor
     protected Entity(){
+        this("/sprites/Player.png");
+    }
+
+    protected Entity(String path){
         x=GamePanel.WIDTH/2.0;
         y=GamePanel.HEIGHT/2.0;
         theta = 0.0;
@@ -20,7 +24,7 @@ public abstract class Entity {
         dy = 0.0;
         dtheta = 0.0;
         hitBox = new HitBox(this, 1);
-        sprite = new Sprite("/sprites/Player.png",30,30);
+        sprite = new Sprite(path,30,30);
     }
 
     protected Entity(double x, double y, double theta, double dx, double dy, double dtheta, double radius, String path){
