@@ -44,4 +44,8 @@ public class SpaceRocks {
     public void keyReleased(int keyCode){
         currentState.keyReleased(keyCode);
     }
+
+    public void quit(){
+        
+    }
 }
