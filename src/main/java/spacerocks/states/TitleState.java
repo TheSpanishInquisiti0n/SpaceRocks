@@ -6,12 +6,12 @@ import java.awt.event.KeyEvent;
 
 import spacerocks.Fonts;
 import spacerocks.GamePanel;
-import spacerocks.SpaceRocks;
+import spacerocks.GameContext;
 
 public class TitleState implements GameState {
-    private final SpaceRocks game;
+    private final GameContext game;
 
-    public TitleState(SpaceRocks game){
+    public TitleState(GameContext game){
         this.game = game;
     }
 

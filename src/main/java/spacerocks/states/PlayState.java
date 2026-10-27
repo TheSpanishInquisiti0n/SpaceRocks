@@ -5,27 +5,29 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import spacerocks.SpaceRocks;
+import spacerocks.GameContext;
 import spacerocks.entities.Asteroid;
+import spacerocks.entities.Entity;
 import spacerocks.entities.Player;
 import spacerocks.entities.Ufo;
 
 //this is the class we might put a builder on if we hate ourselves
 public class PlayState implements GameState {
-    private final SpaceRocks game;
+    private final GameContext game;
     private final Player player;
-    private final List<Asteroid> asteroids;
-    private final List<Ufo> ufos;
+    private final List<Entity> entities;
     //for keys
     private boolean  up, left, right;
+    //will put an entity factory here when the class is written out
 
-    public PlayState(SpaceRocks game){
+
+    public PlayState(GameContext game){
         this.game = game;
+        //not final, just for testing as we work through this
         player = new Player();
-        asteroids = new ArrayList<>();
-        ufos = new ArrayList<>();
-        asteroids.add(new Asteroid());
-        ufos.add(new Ufo());
+        entities = new ArrayList<>();
+        entities.add(new Ufo());
+        entities.add(new Asteroid());
     }
 
     @Override 
@@ -39,11 +41,8 @@ public class PlayState implements GameState {
         if(up){
             player.thrust();
         }
-        for(Asteroid asteroid:asteroids){
-            asteroid.update();
-        }
-        for(Ufo ufo:ufos){
-            ufo.update();
+        for(Entity entity:entities){
+            entity.update();
         }
         player.update();
     }
@@ -51,11 +50,8 @@ public class PlayState implements GameState {
     @Override 
     public void draw(Graphics2D g){
         player.draw(g);
-        for(Asteroid asteroid:asteroids){
-            asteroid.draw(g);
-        }
-        for(Ufo ufo:ufos){
-            ufo.draw(g);
+        for(Entity entity:entities){
+            entity.draw(g);
         }
     }
 

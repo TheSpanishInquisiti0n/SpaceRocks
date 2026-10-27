@@ -7,12 +7,13 @@ import javax.swing.Timer;
 import spacerocks.states.GameState;
 import spacerocks.states.TitleState;
 
-public class SpaceRocks {
+public class SpaceRocks implements GameContext{
     public static final int FPS = 60;
 
     private final GameWindow window;
     private final Timer loop;
     private GameState currentState;
+    //grand plans here for a context class, will make the file
 
     public SpaceRocks(){
         currentState = new TitleState(this);

@@ -3,13 +3,13 @@ package spacerocks.states;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-import spacerocks.SpaceRocks;
+import spacerocks.GameContext;
 
 public class GameOverState implements GameState {
-private final SpaceRocks game;
+private final GameContext game;
 private final int score;
 
-    public GameOverState(SpaceRocks game, int score){
+    public GameOverState(GameContext game, int score){
         this.game = game;
         this.score = score; // will be inherited from play state
     }

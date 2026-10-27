@@ -2,12 +2,12 @@ package spacerocks.states;
 
 import java.awt.Graphics2D;
 
-import spacerocks.SpaceRocks;
+import spacerocks.GameContext;
 
 public class PauseState implements GameState {
-private final SpaceRocks game;
+private final GameContext game;
 
-    public PauseState(SpaceRocks game){
+    public PauseState(GameContext game){
         this.game = game;
     }
 
