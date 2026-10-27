@@ -6,28 +6,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import spacerocks.GameContext;
-import spacerocks.entities.Asteroid;
 import spacerocks.entities.Entity;
+import spacerocks.entities.EntityFactory;
 import spacerocks.entities.Player;
-import spacerocks.entities.Ufo;
 
 //this is the class we might put a builder on if we hate ourselves
 public class PlayState implements GameState {
     private final GameContext game;
+    private final EntityFactory factory;
     private final Player player;
     private final List<Entity> entities;
     //for keys
     private boolean  up, left, right;
-    //will put an entity factory here when the class is written out
 
 
-    public PlayState(GameContext game){
+    public PlayState(GameContext game, EntityFactory factory){
         this.game = game;
+        this.factory = factory;
         //not final, just for testing as we work through this
         player = new Player();
         entities = new ArrayList<>();
-        entities.add(new Ufo());
-        entities.add(new Asteroid());
+        entities.add(factory.createUfo());
+        entities.add(factory.createAsteroid());
     }
 
     @Override 

@@ -19,7 +19,6 @@ public abstract class Entity {
         x=GamePanel.WIDTH/2.0;
         y=GamePanel.HEIGHT/2.0;
         theta = 0.0;
-        theta = 0.0;
         dx = 0.0;
         dy = 0.0;
         dtheta = 0.0;

@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,7 +18,7 @@ import spacerocks.states.TitleState;
 public class SpaceRocksTest {
     private static final String SPRITE = "/sprites/Player.png";
 
-    //this is really only here until I get around to GameContext
+    //fake context for tests to run in a predicatble way
     private static class FakeContext implements GameContext{
         GameState current;
         boolean quit;
@@ -25,6 +26,7 @@ public class SpaceRocksTest {
         @Override public void quit(){quit = true;}
     }
 
+    //tests for collision
     @Test
     void overlappingHitBoxesCollide(){
         Player a = new Player(100, 100, 0, 0, 0, 0, 10, SPRITE);
@@ -33,6 +35,7 @@ public class SpaceRocksTest {
         assertTrue(b.collidesWith(a));
     }
 
+    //same but opposite
     @Test
     void distantHitBoxesDoNotCollide(){
         Player a = new Player(100, 100, 0, 0, 0, 0, 10, SPRITE);
@@ -40,6 +43,7 @@ public class SpaceRocksTest {
         assertFalse(a.collidesWith(b));
     }
 
+    //seeing if wrap works the way it's supposed to
     @Test
     void playerWrapsAroundRightEdge(){
         //dx 10 -> 9.9 after friction, 795 + 9.9 = 804.9, wraps to 4.9
@@ -49,9 +53,10 @@ public class SpaceRocksTest {
         assertEquals(100, p.getY(), 1e-9);
     }
 
+    //all enemies dont accelerate (yet)
     @Test
     void asteroidMovesAtConstantVelocity(){
-        Asteroid a = new Asteroid();
+        Asteroid a = new Asteroid(new Random(42));
         double startX = a.getX();
         double startY = a.getY();
         a.update();
@@ -60,6 +65,7 @@ public class SpaceRocksTest {
         assertEquals(10, dist, 1e-9);
     }
 
+    //just making sure you can actually play the game
     @Test
     void enterOnTitleScreenStartsGame(){
         FakeContext game = new FakeContext();

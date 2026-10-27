@@ -3,10 +3,12 @@ package spacerocks.states;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import spacerocks.Fonts;
 import spacerocks.GamePanel;
 import spacerocks.GameContext;
+import spacerocks.entities.EntityFactory;
 
 public class TitleState implements GameState {
     private final GameContext game;
@@ -34,7 +36,7 @@ public class TitleState implements GameState {
     @Override
     public void keyPressed(int keyCode){
         if(keyCode ==KeyEvent.VK_ENTER){
-            game.setState(new PlayState(game));
+            game.setState(new PlayState(game, new EntityFactory(new Random())));
         }
     }
 

@@ -41,6 +41,7 @@ possible for concepts like an enemy, where all the UFO's and Asteroids will shar
 least some common logic.
 
 ## Proposed Class Structure
+Updated to reflect changes btw
 
 ```mermaid
 ---
@@ -52,9 +53,14 @@ classDiagram
     direction TB
 
     %% ===== Core =====
+    class RunTest
     class SpaceRocks
+    class GameContext{
+        <<interface>>
+    }
     class GameWindow
     class GamePanel
+    class Fonts
 
     %% ===== States =====
     class GameState{
@@ -72,25 +78,24 @@ classDiagram
     class Enemy{
         <<abstract>>
     }
+    class HitBox
+    class Sprite
     class Player
     class Bullet
     class Asteroid
     class Ufo
-    class SpecialAsteroid1
-    class SpecialAsteroid2
-    class SpecialUfo1
-    class SpecialUfo2
-    class EnemyFactory
-
-    %% ===== Power-ups =====
     class PowerUp
-    class SpecialPowerUp1
-    class SpecialPowerUp2
-    class PowerUpFactory
+    class PowerEffect{
+        <<interface>>
+    }
+    class EntityFactory
 
     %% ===== Core relationships =====
+    RunTest ..> SpaceRocks : launches
+    GameContext <|.. SpaceRocks
     SpaceRocks *-- GameWindow : creates
     GameWindow *-- GamePanel : contains
+    GamePanel --> SpaceRocks : forwards draw and keys
     SpaceRocks --> GameState : current state
 
     %% ===== States =====
@@ -98,32 +103,34 @@ classDiagram
     GameState <|.. PlayState
     GameState <|.. PauseState
     GameState <|.. GameOverState
+    TitleState --> GameContext : changes state through
+    PlayState --> GameContext : changes state through
+    PauseState --> GameContext : changes state through
+    GameOverState --> GameContext : changes state through
+    TitleState ..> Fonts : uses
     PauseState --> PlayState : draws behind menu
 
     %% ===== What PlayState owns =====
     PlayState "1" *-- "1" Player
-    PlayState "1" *-- "*" Enemy
-    PlayState "1" *-- "*" Bullet
-    PlayState --> EnemyFactory : spawns enemies with
-    PlayState --> PowerUpFactory : spawns power-ups with
-    EnemyFactory ..> Enemy : creates
-
-    %% ===== Power-up relationships =====
-    PowerUpFactory ..> PowerUp : creates
+    PlayState "1" *-- "*" Entity : enemies, bullets, power-ups
+    PlayState --> EntityFactory : spawns entities with
+    EntityFactory ..> Asteroid : creates
+    EntityFactory ..> Ufo : creates
+    EntityFactory ..> PowerUp : creates
     Player ..> PowerUp : uses
+    PowerUp --> PowerEffect : delegates its effect to
+
+    %% ===== What every Entity has =====
+    Entity "1" *-- "1" HitBox
+    Entity "1" *-- "1" Sprite
 
     %% ===== Inheritance =====
     Entity <|-- Player
     Entity <|-- Bullet
     Entity <|-- Enemy
+    Entity <|-- PowerUp
     Enemy <|-- Asteroid
     Enemy <|-- Ufo
-    Asteroid <|-- SpecialAsteroid1
-    Asteroid <|-- SpecialAsteroid2
-    Ufo <|-- SpecialUfo1
-    Ufo <|-- SpecialUfo2
-    PowerUp <|-- SpecialPowerUp1
-    PowerUp <|-- SpecialPowerUp2
 ```
 ## Legend for Class Structure Diagram
 
@@ -135,7 +142,7 @@ classDiagram
 | `<\|..` | Realization | The class on the right implements the interface on the left (e.g. `GameState <\|.. PlayState`). |
 | `*--` | Composition | The owner creates and controls the other class; it lives and dies with the owner (e.g. `PlayState *-- Player`). |
 | `-->` | Association | The class holds a reference to the other class (e.g. `SpaceRocks --> GameState`). |
-| `..>` | Dependency | The class uses the other briefly, such as creating it or passing it around (e.g. `EnemyFactory ..> Enemy`). |
+| `..>` | Dependency | The class uses the other briefly, such as creating it or passing it around (e.g. `EntityFactory ..> Asteroid`). |
 | `"1"` | Multiplicity: one | Exactly one instance on that side of the relationship. |
 | `"*"` | Multiplicity: many | Zero or more instances on that side of the relationship. |
 | `: label` | Relationship label | Plain-text description of the relationship; doesn't change its meaning. |
@@ -365,7 +372,78 @@ Now running RunTest.java in your ide should pop out a window that you can pilot 
 
 okay and that should bring us up to speed. until next time.
 
+## Design Patterns
 
+Okay if you've seen the readme you know I like to go on and on to myself in here. As I am writing this, I am preparing for the mid-project review. My first step was to come back after a hiatus from working on this, look through it, and do some optimizations. these introduce some patterns and more stuff that we've been working on in class, so if reading this isn't exactly consistent with the rest of my writing, that's why.
 
+### State (in progress)
 
+- GameState is the interface for this pattern, TitleState, GameOverState, PlayState, and PauseState implement the interface. GameState takes a GameContext object in (which SpaceRocks implements). Each state is responsible for its own update(), draw(), and keyboard input. these states switch themselves using GameContext.setState() 
 
+### Factory (in progress)
+
+- Originally there were going to be more factories here but I realized we really just need 1 (right now) to handle all the entites . Introduce: EntityFactory (ooh, ahh). PlayState will ask the factory for kind of everything. bullets? handled. enemies? you know it. powerups? have you not been listening to me? this ensures that all the spawn logic will be handled in one place which is nice. bullets arent implemented right now so you wont see a createBullet() method just yet
+
+### Strategy (in progress)
+
+This is what I got so far:
+
+- PowerEffect is the strategy interface, it has one method, apply(Player p), which is whatever the powerup actually does to the player. each PowerUp holds a PowerEffect that gets passed into its constructor, and EntityFactory.createPowerUp(effect) hands it through, so the PowerUp itself doesn't care what kind of powerup it is. a speed boost and a rapid fire powerup are the same PowerUp class with a different PowerEffect plugged in, this means we dont need all the subclasses for powerup (yay)
+
+- the player's firing logic should also be swappable at runtime the same way, so powerups can change the bullet spray or speed or whatnot. still undecided on whether special enemies get the strategy treatment too or just become subclasses
+
+### Template (in progress)
+
+- I wrote into these into code before I knew what a template pattern was, but upon returning to this project it does qualify and so it is being mentioned for the mid-project review. Entity.update() fixes the order of movement (moves and then runs wrap()) by calling the abstract hook willWrap(). Player adds friction before it calls super.update() I'm sure that more of these will appear as the code progresses forward
+
+## To Do (Rough Estimate for Mid-Project Review)
+
+### Collisions and Game Over
+
+- [ ] Raise the default hitbox radius in Entity from 1 to roughly the sprite's size (around 12-15).
+- [ ] Spawn enemies at a random screen edge in EntityFactory so they don't start on top of the player.
+- [ ] Check player vs enemy collisions in PlayState.update() and switch to GameOverState on a hit.
+- [ ] Draw "GAME OVER", the final score, and restart/quit instructions in GameOverState.draw().
+- [ ] Make SpaceRocks.quit() actually close the game.
+
+### Shooting
+
+- [ ] Give Bullet a constructor that takes the player's position and heading and sets its velocity from them.
+- [ ] Draw bullets in Bullet.draw() using bullet.png or a small circle.
+- [ ] Kill bullets after a set number of frames or once they leave the screen.
+- [ ] Add a createBullet() method to EntityFactory.
+- [ ] Fire a bullet on spacebar in PlayState with a short cooldown between shots.
+- [ ] Check bullet vs enemy collisions and kill both on a hit.
+- [ ] Remove dead entities from the list each frame with entities.removeIf().
+
+### Scoring and Difficulty
+
+- [ ] Add a score to PlayState that goes up based on which kind of enemy was destroyed.
+- [ ] Draw the current score on screen during play.
+- [ ] Spawn more enemies over time so the game gets harder the longer you survive.
+
+### Enemies
+
+- [ ] Split asteroids into smaller pieces when shot until the smallest size is destroyed.
+- [ ] Give different asteroid types different health and point values.
+- [ ] Make UFOs appear periodically and shoot at the player.
+- [ ] Decide whether special enemies use the Strategy pattern or plain subclasses.
+
+### Power-ups
+
+- [ ] Write at least one concrete PowerEffect implementation, like a speed boost or rapid fire.
+- [ ] Change doPower() to doPower(Player p) and have it call powerEffect.apply(p).
+- [ ] Spawn power-ups occasionally and apply their effect when the player touches one.
+- [ ] Make the player's firing behavior swappable at runtime so power-ups can change shot spread or speed.
+- [ ] Crop Null.png or add a real power-up sprite so it isn't squashed down to 30x30.
+
+### Menus
+
+- [ ] Make PauseState hold the paused PlayState, draw it with a "PAUSED" overlay, and resume on Esc.
+- [ ] Add a pause key to PlayState.keyPressed() that switches to PauseState.
+- [ ] Build the settings screen mentioned in the Key Features tab at the top of the readme.
+
+### Cleanup and Tests
+
+- [ ] Write more tests as features get written, like bullets not wrapping, game over transitions, and pause/resume.
+- [ ] Load the window icon in GameWindow with getResource() so it actually shows up.

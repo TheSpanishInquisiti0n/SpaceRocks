@@ -21,7 +21,7 @@ sourceSets {
 }
 
 application {
-    mainClass = 'spacerocks.SpaceRocks'
+    mainClass = 'spacerocks.RunTest'
 }
 
 test {

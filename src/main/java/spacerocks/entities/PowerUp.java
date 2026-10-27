@@ -3,9 +3,11 @@ package spacerocks.entities;
 import java.awt.Graphics2D;
 
 public class PowerUp extends Entity{
-    //lowkey might wanna do 
-    PowerUp(){
-        super();
+    private PowerEffect powerEffect;
+
+    PowerUp(PowerEffect effect){
+        super("/sprites/Null.png");
+        this.powerEffect = effect;
     }
 
     @Override
@@ -13,13 +15,13 @@ public class PowerUp extends Entity{
         return true;
     }
 
-    @Override 
+    @Override
     public void draw(Graphics2D g){
-        //needs to be implemented
+        sprite.draw(g, x, y, theta);
     }
 
     public void doPower(){
-        //for the strategy pattern
+        //for the strategy pattern, uses PowerEffect
     }
 }
 
